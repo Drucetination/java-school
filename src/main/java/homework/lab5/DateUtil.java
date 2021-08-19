@@ -1,16 +1,18 @@
 package homework.lab5;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DateUtil {
 
-    public static AndreiDate stringToDate(String string) {
-        String[] date = string.split("\\.");
-        return new AndreiDate(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));
-    }
+        private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd|MM|yyyy-hh:mm:ss:a");
 
-    public static String dateToString(AndreiDate date) {
-        return date.toString();
-    }
+        public static LocalDateTime stringToDate(String date){
+            return LocalDateTime.parse(date, formatter);
+        }
 
-}
+        public static String dateToString(LocalDateTime date) {
+            return formatter.format(date);
+        }
+
+    }
