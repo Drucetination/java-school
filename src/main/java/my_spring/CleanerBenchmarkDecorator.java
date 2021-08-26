@@ -6,10 +6,6 @@ public class CleanerBenchmarkDecorator extends CleanerDecorator {
         super(cleaner);
     }
 
-    public void init() {
-        System.out.println("отсчет пошел");
-    }
-
     @Override
     public void clean() {
         long start = System.nanoTime();
