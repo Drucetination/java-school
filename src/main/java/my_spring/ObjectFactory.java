@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import org.reflections.Reflections;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,6 @@ public class ObjectFactory {
 
     private List<ObjectConfigurator> configurators = new ArrayList<>();
 
-
     @SneakyThrows
     public ObjectFactory() {
         Set<Class<? extends ObjectConfigurator>> classes = scanner.getSubTypesOf(ObjectConfigurator.class);
@@ -36,14 +34,11 @@ public class ObjectFactory {
 
     @SneakyThrows
     public <T> T createObject(Class<T> type) {
-        if (type.isInterface()) {
-            type = config.getImplClass(type);
-        }
-
+        type = resolveImple(type);
         T t = type.getDeclaredConstructor().newInstance();
-
         configure(t);
-        initialize(t);
+
+        // run init method
 
         return t;
     }
@@ -52,7 +47,6 @@ public class ObjectFactory {
         configurators.forEach(configurator -> configurator.configure(t));
     }
 
-    @SneakyThrows
     private <T> Class<T> resolveImple(Class<T> type) {
         if (type.isInterface()) {
             Class<T> implClass = config.getImplClass(type);
@@ -68,15 +62,15 @@ public class ObjectFactory {
         return type;
     }
 
-    @SneakyThrows
-    private <T> void initialize(T t) {
-        Method[] methods = t.getClass().getMethods();
-        for (Method method : methods) {
-            if (method.getName().startsWith("init")) {
-                method.invoke(t);
-            }
-        }
-    }
+//    @SneakyThrows
+//    private <T> void initialize(T t) {
+//        Method[] methods = t.getClass().getMethods();
+//        for (Method method : methods) {
+//            if (method.getName().startsWith("init")) {
+//                method.invoke(t);
+//            }
+//        }
+//    }
 
 
 
